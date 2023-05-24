@@ -27,7 +27,9 @@ class _GreetingLayoutState extends State<GreetingLayout> {
                 buttonTitle: buttonTitle,
                 buttonWidth: buttonWidth,
                 buttonColor: primaryColor,
-                buttonHeight: buttonHeight, onPressed: () => Navigator.of(context).pushNamed(TasksScreen.path),
+                buttonHeight: buttonHeight, onPressed: () {
+                  Navigator.of(context).pushNamed(TasksScreen.path);
+                },
               ),
             )
           ],
