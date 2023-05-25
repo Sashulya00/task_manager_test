@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_manager_test/business_logic/bloc/task_list_bloc.dart';
+import 'package:task_manager_test/presentation/add_task/add_goal_screen.dart';
 import 'package:task_manager_test/presentation/widgets/background_widget.dart';
+import 'package:task_manager_test/presentation/widgets/primary_button_widget.dart';
 import 'package:task_manager_test/presentation/widgets/select_button_widget.dart';
 import 'package:task_manager_test/presentation/widgets/task_widget.dart';
 
@@ -12,7 +14,13 @@ class TasksLayout extends StatefulWidget {
   State<TasksLayout> createState() => _TasksLayoutState();
 }
 
+const primaryColor = Color(0xffffd600);
+const buttonWidth = 140.0;
+const buttonHeight = 50.0;
+
 class _TasksLayoutState extends State<TasksLayout> {
+  static const buttonTitle = "";
+
   @override
   void initState() {
     context.read<TaskListBloc>().add(LoadTaskList());
@@ -24,6 +32,21 @@ class _TasksLayoutState extends State<TasksLayout> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: primaryColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        onPressed: () async {
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const AddGoalScreen()),
+          );
+          if (mounted) context.read<TaskListBloc>().add(LoadTaskList());
+        },
+        child: const Icon(
+          Icons.add,
+          color: Colors.black,
+        ),
+      ),
       body: Stack(
         children: [
           const BackgroundWidget(),
@@ -82,21 +105,3 @@ class _TasksLayoutState extends State<TasksLayout> {
     );
   }
 }
-// ListView(
-// children: [
-// Stack(
-// children: [BackgroundWidget(),
-// Column(
-// children: [
-// Center(
-// child:
-// ),
-// TaskWidget(urgent: , type: null, status: null, name: '', finishDate: null,),
-// ],
-// ),
-// ],
-// ),
-// ]
-// ,
-// )
-// ,
