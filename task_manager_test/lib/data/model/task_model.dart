@@ -12,13 +12,13 @@
 class TaskModel {
   final String id;
   final String taskId;
-  final num? status;
+  final int? status;
   final String? name;
-  final num? type;
+  final int? type;
   final String? description;
   final String? file;
   final String? finishDate;
-  final num? urgent;
+  final int? urgent;
   final String? syncTime;
 
   const TaskModel({
@@ -62,13 +62,13 @@ class TaskModel {
   TaskModel copyWith({
     String? id,
     String? taskId,
-    num? status,
+    int? status,
     String? name,
-    num? type,
+    int? type,
     String? description,
     String? file,
     String? finishDate,
-    num? urgent,
+    int? urgent,
     String? syncTime,
   }) =>
       TaskModel(
