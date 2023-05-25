@@ -16,4 +16,9 @@ class RepositoryImpl implements Repository {
     }
     return listOfModels;
   }
+
+  @override
+  Future<void> addTask(TaskModel model) {
+    return networkService.addTask(model);
+  }
 }
