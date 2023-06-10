@@ -1,13 +1,9 @@
-import 'dart:async';
 import 'dart:math';
-
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:task_manager_test/data/model/task_model.dart';
 import 'package:task_manager_test/data/repository/repository.dart';
-
 part 'add_task_event.dart';
-
 part 'add_task_state.dart';
 
 class AddTaskBloc extends Bloc<AddTaskEvent, AddTaskState> {
@@ -29,7 +25,6 @@ class AddTaskBloc extends Bloc<AddTaskEvent, AddTaskState> {
           syncTime: '',);
         await repository.addTask(model);
         emit(AddTaskSuccess());
-
       } catch (error) {
         emit(AddTaskError());
       }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager_test/data/repository/repository_impl.dart';
+import 'package:task_manager_test/data/services/network_services_impl.dart';
 import 'package:task_manager_test/presentation/tasks_screen/tasks_screen.dart';
 import 'package:task_manager_test/presentation/widgets/background_widget.dart';
 import 'package:task_manager_test/presentation/widgets/primary_button_widget.dart';
@@ -16,24 +18,37 @@ class _GreetingLayoutState extends State<GreetingLayout> {
   static const buttonTitle = "Вхід";
   static const primaryColor = Color(0xffffd600);
 
+  final taskId = 9992;
+
+  final repo = RepositoryImpl(NetworkServiceImpl());
+
+  Future<void> changeTask() async {
+    await repo.changeTask(taskId, false);
+  }
+
+  Future<void> deleteTask()async {
+    await repo.deleteTask(taskId);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Stack(
-          children: [
-            const BackgroundWidget(),
-            Center(
-              child: PrimaryButtonWidget(
-                buttonTitle: buttonTitle,
-                buttonWidth: buttonWidth,
-                buttonColor: primaryColor,
-                buttonHeight: buttonHeight, onPressed: () {
-                  Navigator.of(context).pushNamed(TasksScreen.path);
-                },
-              ),
-            )
-          ],
-        ),
+      body: Stack(
+        children: [
+          const BackgroundWidget(),
+          Center(
+            child: PrimaryButtonWidget(
+              buttonTitle: buttonTitle,
+              buttonWidth: buttonWidth,
+              buttonColor: primaryColor,
+              buttonHeight: buttonHeight,
+              onPressed: () {
+                Navigator.of(context).pushNamed(TasksScreen.path);
+              },
+            ),
+          )
+        ],
+      ),
     );
   }
 }

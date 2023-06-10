@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_manager_test/business_logic/bloc/add_task/add_task_bloc.dart';
-import 'package:task_manager_test/business_logic/bloc/task_list_bloc.dart';
 import 'package:task_manager_test/data/repository/repository.dart';
 import 'package:task_manager_test/presentation/tasks_screen/tasks_layout.dart';
 import 'package:task_manager_test/presentation/widgets/background_widget.dart';
@@ -78,11 +77,11 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
           minLines: 3,
           maxLines: 3,
           onChanged: (value) {
-            desc = value!;
+            desc = value;
           },
           decoration: InputDecoration(
             contentPadding: EdgeInsets.all(20),
-            hintText: 'Додати опис,,',
+            hintText: 'Додати опис...',
             hintStyle: TextStyle(
               color: Colors.black,
             ),
@@ -130,7 +129,7 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text('Дата заверщшення'),
+            child: Text('Дата завершення'),
           ),
         ],
       ));

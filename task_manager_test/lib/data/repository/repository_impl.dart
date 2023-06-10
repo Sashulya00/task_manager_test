@@ -21,4 +21,14 @@ class RepositoryImpl implements Repository {
   Future<void> addTask(TaskModel model) {
     return networkService.addTask(model);
   }
+
+  @override
+  Future<void> changeTask(int taskId, bool isChecked) {
+    return networkService.changeTask(taskId, isChecked);
+  }
+
+  @override
+  Future<void> deleteTask(int taskId) {
+    return networkService.deleteTask(taskId);
+  }
 }

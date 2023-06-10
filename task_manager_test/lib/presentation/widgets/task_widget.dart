@@ -9,6 +9,7 @@ class TaskWidget extends StatefulWidget {
     required this.name,
     required this.finishDate,
   });
+
   final int urgent;
   final int type;
   final int status;
@@ -22,8 +23,30 @@ class TaskWidget extends StatefulWidget {
 class _TaskWidgetState extends State<TaskWidget> {
   static const space = SizedBox(height: 5);
   static const enabledColor = Color(0xffFBEFB4);
+  static const urgentColor = Color(0xffFF8989);
+  static const disabledColor = Color(0xffDBDBDB);
   static const paddingHorizontal = EdgeInsets.symmetric(horizontal: 8.0);
+  static const workIcon = Icon(IconData(0xe6f4, fontFamily: 'MaterialIcons'),);
+  static const homeIcon = Icon(IconData(0xf107, fontFamily: 'MaterialIcons'),);
   bool isChecked = false;
+
+  dynamic getTypeIcon(int value) {
+    if (value == 1) {
+      return workIcon;
+    } else if (value == 2) {
+      return homeIcon;
+    }
+    value == widget.type;
+  }
+  
+  dynamic getUrgentColor(int value) {
+    if (value == 0) {
+      return disabledColor;
+    } else if (value == 1) {
+      return urgentColor;
+    }
+    value == widget.urgent;
+  } 
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +55,7 @@ class _TaskWidgetState extends State<TaskWidget> {
         width: 350,
         height: 65,
         decoration: BoxDecoration(
-          color: const Color(0xffFF8989),//urgent
+          color: getUrgentColor(widget.urgent), //urgent
           borderRadius: BorderRadius.circular(15),
         ),
         child: Padding(
@@ -44,9 +67,7 @@ class _TaskWidgetState extends State<TaskWidget> {
               Container(
                 width: 45,
                 height: 45,
-                child: const Icon(
-                  IconData(0xe6f4, fontFamily: 'MaterialIcons'),//type
-                ),
+                child: getTypeIcon(widget.type),
               ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -55,12 +76,12 @@ class _TaskWidgetState extends State<TaskWidget> {
                   Container(
                     width: 240,
                     height: 40,
-                    child: const Align(
+                    child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'Намалювати головну сторінку цієї програми',//name
+                        widget.name, //name
                         softWrap: true,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
                         ),
@@ -68,10 +89,10 @@ class _TaskWidgetState extends State<TaskWidget> {
                     ),
                   ),
                   Container(
-                    child:  Align(
+                    child: Align(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'DD.MM.YEAR',//finishDate
+                        widget.finishDate, //finishDate
                         style: TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.w600,

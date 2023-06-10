@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_manager_test/business_logic/bloc/task_list_bloc.dart';
 import 'package:task_manager_test/presentation/add_task/add_goal_screen.dart';
 import 'package:task_manager_test/presentation/widgets/background_widget.dart';
-import 'package:task_manager_test/presentation/widgets/primary_button_widget.dart';
 import 'package:task_manager_test/presentation/widgets/select_button_widget.dart';
 import 'package:task_manager_test/presentation/widgets/task_widget.dart';
 
@@ -27,7 +26,7 @@ class _TasksLayoutState extends State<TasksLayout> {
     super.initState();
   }
 
-  int selectedTab = 0;
+    int selectedTab = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -86,6 +85,7 @@ class _TasksLayoutState extends State<TasksLayout> {
                                   status: item.status!,
                                   name: item.name!,
                                   finishDate: item.finishDate ?? '',
+
                                 ),
                               );
                             },

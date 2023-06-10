@@ -6,8 +6,8 @@ import 'package:task_manager_test/data/services/network_services.dart';
 
 class NetworkServiceImpl implements NetworkService {
   static const _baseUrl = "https://to-do.softwars.com.ua";
-  static const _apiUrl = "$_baseUrl/tasks";
-  static const _addApiUrl = "$_baseUrl/tasks";
+  static const _apiUrl = "$_baseUrl/tasks/";
+
   static const _dataKey = 'data';
 
   @override
@@ -21,17 +21,41 @@ class NetworkServiceImpl implements NetworkService {
 
   @override
   Future<void> addTask(TaskModel model) async {
-    final url = Uri.parse(_addApiUrl);
-    final response = await post(url,
-        body: jsonEncode({
-          "taskId": model.id,
-          "status": model.status,
-          "name": model.name,
-          "type": model.type,
-          "finishDate": model.finishDate,
-          "urgent": model.urgent,
-        }));
-    if (response.statusCode != 200) throw Exception();
-    return;
+    final data = model.toJson();
+    final url = Uri.parse(_apiUrl);
+    final response = await post(url, body: jsonEncode([data]));
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      print('Data sent successfully.');
+    } else {
+      print('Request addTask failed with status: ${response.statusCode}.');
+    }
+  }
+
+  @override
+  Future<void> changeTask(int taskId, bool isChecked) async {
+    final data = {"status": isChecked ? 1 : 2};
+    final response = await put(
+      Uri.parse('$_apiUrl$taskId'),
+      body: jsonEncode(data),
+    );
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      print('Data change successfully');
+    } else {
+      print('Request changeTask failed with status: ${response.statusCode}.');
+    }
+  }
+
+  @override
+  Future<void> deleteTask(int taskId) async {
+    final data = {"taskId": taskId};
+    final response = await put(
+      Uri.parse('$_apiUrl$taskId'),
+      body: jsonEncode(data),
+    );
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      print('Data delete successfully');
+    } else {
+      print('Request deleteTask failed with status: ${response.statusCode}.');
+    }
   }
 }
