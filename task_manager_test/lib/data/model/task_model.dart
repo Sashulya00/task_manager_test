@@ -93,9 +93,9 @@ class TaskModel {
     map['type'] = type;
     map['description'] = description;
     map['file'] = file;
-    map['finishDate'] = finishDate;
+    if (finishDate != null) map['finishDate'] = finishDate!.toIso8601String();
     map['urgent'] = urgent;
-    map['syncTime'] = syncTime;
+    if (syncTime != null) map['syncTime'] = syncTime!.toIso8601String();
     return map;
   }
 }

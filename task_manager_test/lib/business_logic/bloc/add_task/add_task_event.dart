@@ -8,14 +8,15 @@ class AddTaskButtonPressed extends AddTaskEvent {
   final int type;
   final bool isUrgent;
   final String desc;
-  final String? photoPath;
+  final String? photoEncoded;
   final DateTime? endDate;
 
-  AddTaskButtonPressed(
-      {required this.name,
-      required this.type,
-      required this.isUrgent,
-      required this.desc,
-      this.photoPath,
-      this.endDate});
+  AddTaskButtonPressed({
+    required this.name,
+    required this.type,
+    required this.isUrgent,
+    required this.desc,
+    this.photoEncoded,
+    this.endDate,
+  });
 }

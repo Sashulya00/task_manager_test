@@ -1,11 +1,11 @@
 import 'dart:math';
+
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:task_manager_test/data/model/task_model.dart';
 import 'package:task_manager_test/data/repository/repository.dart';
 
 part 'add_task_event.dart';
-
 part 'add_task_state.dart';
 
 class AddTaskBloc extends Bloc<AddTaskEvent, AddTaskState> {
@@ -22,15 +22,16 @@ class AddTaskBloc extends Bloc<AddTaskEvent, AddTaskState> {
           name: event.name,
           type: event.type,
           description: event.desc,
-          file: 'null',
+          file: event.photoEncoded,
           finishDate: event.endDate,
-          urgent: event.isUrgent ? 0 : 1,
+          urgent: event.isUrgent ? 1 : 0,
           syncTime: DateTime.now(),
         );
         await repository.addTask(model);
         emit(AddTaskSuccess());
       } catch (error) {
         emit(AddTaskError());
+        rethrow;
       }
     });
   }
