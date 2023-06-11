@@ -11,15 +11,31 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
   final Repository repository;
 
   TaskListBloc(this.repository) : super(InitialState()) {
-    on<LoadTaskList>((event, emit) async {
-      try {
-        emit(LoadingState());
+    on<LoadTaskList>(
+      (event, emit) async {
+        try {
+          emit(LoadingState());
 
-        final list = await repository.fetchTasks();
-        emit(LoadedState(list));
-      } catch (error) {
-        emit(ErrorState(error));
-      }
-    });
+          final list = await repository.fetchTasks();
+          emit(LoadedState(list));
+        } catch (error) {
+          emit(ErrorState(error));
+        }
+      },
+    );
+
+    on<ChangeTaskButtonPressed>(
+      (event, emit) async {
+        try {
+          emit(LoadingState());
+
+          await repository.changeTask(event.taskId, event.isChecked);
+          final list = await repository.fetchTasks();
+          emit(LoadedState(list));
+        } catch (error) {
+          emit(ErrorState(error));
+        }
+      },
+    );
   }
 }

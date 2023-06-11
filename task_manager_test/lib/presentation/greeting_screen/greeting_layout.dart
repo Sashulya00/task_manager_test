@@ -18,18 +18,6 @@ class _GreetingLayoutState extends State<GreetingLayout> {
   static const buttonTitle = "Вхід";
   static const primaryColor = Color(0xffffd600);
 
-  final taskId = 9992;
-
-  final repo = RepositoryImpl(NetworkServiceImpl());
-
-  Future<void> changeTask() async {
-    await repo.changeTask(taskId, false);
-  }
-
-  Future<void> deleteTask()async {
-    await repo.deleteTask(taskId);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

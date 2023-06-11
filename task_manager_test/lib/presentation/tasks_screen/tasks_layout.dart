@@ -26,7 +26,7 @@ class _TasksLayoutState extends State<TasksLayout> {
     super.initState();
   }
 
-    int selectedTab = 0;
+  int selectedTab = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +59,13 @@ class _TasksLayoutState extends State<TasksLayout> {
                 return const Center(child: Text("error"));
               } else if (state is LoadedState) {
                 var list = state.taskList;
-                if (selectedTab != 0) list = list.where((task) => task.type == selectedTab).toList();
+                if (selectedTab != 0) {
+                  list = list
+                      .where(
+                        (task) => task.type == selectedTab,
+                      )
+                      .toList();
+                }
 
                 return Stack(
                   children: [
@@ -85,7 +91,12 @@ class _TasksLayoutState extends State<TasksLayout> {
                                   status: item.status!,
                                   name: item.name!,
                                   finishDate: item.finishDate ?? '',
-
+                                  onChecked: (value) => context.read<TaskListBloc>().add(
+                                        ChangeTaskButtonPressed(
+                                          isChecked: value,
+                                          taskId: item.taskId,
+                                        ),
+                                      ),
                                 ),
                               );
                             },

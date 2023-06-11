@@ -32,8 +32,8 @@ class NetworkServiceImpl implements NetworkService {
   }
 
   @override
-  Future<void> changeTask(int taskId, bool isChecked) async {
-    final data = {"status": isChecked ? 1 : 2};
+  Future<void> changeTask(String taskId, bool isChecked) async {
+    final data = {"status": isChecked ? 2 : 1};
     final response = await put(
       Uri.parse('$_apiUrl$taskId'),
       body: jsonEncode(data),
@@ -46,9 +46,9 @@ class NetworkServiceImpl implements NetworkService {
   }
 
   @override
-  Future<void> deleteTask(int taskId) async {
+  Future<void> deleteTask(String taskId) async {
     final data = {"taskId": taskId};
-    final response = await put(
+    final response = await delete(
       Uri.parse('$_apiUrl$taskId'),
       body: jsonEncode(data),
     );

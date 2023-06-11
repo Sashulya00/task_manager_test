@@ -23,12 +23,12 @@ class RepositoryImpl implements Repository {
   }
 
   @override
-  Future<void> changeTask(int taskId, bool isChecked) {
+  Future<void> changeTask(String taskId, bool isChecked) {
     return networkService.changeTask(taskId, isChecked);
   }
 
   @override
-  Future<void> deleteTask(int taskId) {
+  Future<void> deleteTask(String taskId) {
     return networkService.deleteTask(taskId);
   }
 }
