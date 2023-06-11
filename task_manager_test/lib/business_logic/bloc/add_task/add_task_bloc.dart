@@ -1,9 +1,11 @@
- import 'dart:math';
+import 'dart:math';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:task_manager_test/data/model/task_model.dart';
 import 'package:task_manager_test/data/repository/repository.dart';
+
 part 'add_task_event.dart';
+
 part 'add_task_state.dart';
 
 class AddTaskBloc extends Bloc<AddTaskEvent, AddTaskState> {
@@ -13,16 +15,18 @@ class AddTaskBloc extends Bloc<AddTaskEvent, AddTaskState> {
     on<AddTaskButtonPressed>((event, emit) async {
       try {
         emit(AddTaskLoading());
-        final model = TaskModel(id: Random().nextInt(10000).toString(),
+        final model = TaskModel(
+          id: Random().nextInt(10000).toString(),
           taskId: Random().nextInt(10000).toString(),
           status: 1,
           name: event.name,
           type: event.type,
           description: event.desc,
           file: 'null',
-          finishDate: DateTime.now().toString(),
+          finishDate: event.endDate,
           urgent: event.isUrgent ? 0 : 1,
-          syncTime: '',);
+          syncTime: DateTime.now(),
+        );
         await repository.addTask(model);
         emit(AddTaskSuccess());
       } catch (error) {

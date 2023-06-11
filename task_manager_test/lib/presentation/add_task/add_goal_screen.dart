@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:task_manager_test/business_logic/bloc/add_task/add_task_bloc.dart';
 import 'package:task_manager_test/data/repository/repository.dart';
 import 'package:task_manager_test/presentation/tasks_screen/tasks_layout.dart';
@@ -15,11 +16,9 @@ class AddGoalScreen extends StatelessWidget {
     return BlocProvider<AddTaskBloc>(
       lazy: false,
       create: (_) => AddTaskBloc(serviceLocator<Repository>()),
-      child: Builder(
-        builder: (context) {
-          return const AddGoalLayout();
-        }
-      ),
+      child: Builder(builder: (context) {
+        return const AddGoalLayout();
+      }),
     );
   }
 }
@@ -38,6 +37,25 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
   String? filePath;
   DateTime? dateTime;
   bool isUrgent = false;
+  final datePickerController = TextEditingController();
+  static const datePickerTitle = 'Дата завершення:';
+
+  Future<void> selectDate() async {
+    final DateTime? selectedDate = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+      initialEntryMode: DatePickerEntryMode.calendar,
+    );
+
+    if (selectedDate != null) {
+      String formattedDate = DateFormat('yyyy-MM-dd').format(selectedDate);
+      setState(() {
+        datePickerController.text = formattedDate.toString();
+      });
+    }
+  }
 
   Widget yellowCard(Widget child) => Padding(
         padding: const EdgeInsets.only(bottom: 20),
@@ -125,14 +143,16 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
         ],
       ));
 
-  Widget get date => yellowCard(Row(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text('Дата завершення'),
-          ),
-        ],
-      ));
+  Widget get date => GestureDetector(onTap: selectDate,
+    child: yellowCard(Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text('$datePickerTitle ${datePickerController.text}'),
+            ),
+          ],
+        )),
+  );
 
   Widget get nameWidget => TextFormField(
         onChanged: (value) => setState(() {

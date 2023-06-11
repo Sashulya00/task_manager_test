@@ -20,6 +20,7 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
           emit(LoadedState(list));
         } catch (error) {
           emit(ErrorState(error));
+          rethrow;
         }
       },
     );
