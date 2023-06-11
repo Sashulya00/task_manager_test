@@ -8,11 +8,14 @@ class SelectButtonWidget extends StatefulWidget {
     required this.secondTabTitle,
     required this.thirdTabTitle,
     required this.onChanged,
+    required this.selectedTab,
   });
 
   final String firstTabTitle;
   final String secondTabTitle;
   final String thirdTabTitle;
+
+  final int selectedTab;
   final void Function(int) onChanged;
 
   @override
@@ -38,12 +41,18 @@ class _SelectButtonWidgetState extends State<SelectButtonWidget> with SingleTick
   @override
   void initState() {
     super.initState();
-
+    _selectedIndex = widget.selectedTab;
     _controller = TabController(length: 3, vsync: this);
   }
 
+  // todo: почему когда убираю єтот метод то лагает таббар
+  @override
+  void didUpdateWidget(covariant SelectButtonWidget oldWidget) {
+    _selectedIndex = widget.selectedTab;
+    super.didUpdateWidget(oldWidget);
+  }
+
   void onTap(int i) {
-    _selectedIndex = i;
     widget.onChanged(i);
   }
 

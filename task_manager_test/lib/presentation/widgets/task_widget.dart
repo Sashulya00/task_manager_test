@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class TaskWidget extends StatelessWidget {
+class TaskWidget extends StatefulWidget {
   const TaskWidget({
     super.key,
     required this.urgent,
@@ -17,6 +17,12 @@ class TaskWidget extends StatelessWidget {
   final String name;
   final String finishDate;
   final void Function(bool) onChecked;
+
+  @override
+  State<TaskWidget> createState() => _TaskWidgetState();
+}
+
+class _TaskWidgetState extends State<TaskWidget> {
   static const space = SizedBox(height: 5);
   static const enabledColor = Color(0xffFBEFB4);
   static const urgentColor = Color(0xffFF8989);
@@ -28,6 +34,8 @@ class TaskWidget extends StatelessWidget {
   static const homeIcon = Icon(
     IconData(0xf107, fontFamily: 'MaterialIcons'),
   );
+
+  var isChecked = false;
 
   Icon getTypeIcon(int value) {
     if (value == 1) {
@@ -47,23 +55,32 @@ class TaskWidget extends StatelessWidget {
     throw Exception('Unknown color');
   }
 
+  void updateIsChecked() {
+    if (widget.status == 1) {
+      isChecked = false;
+    } else if (widget.status == 2) {
+      isChecked = true;
+    } else {
+      throw Exception('unknown status');
+    }
+  }
+
+  @override
+  void initState() {
+    updateIsChecked();
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
-    late final bool isChecked;
-    if (status == 2) {
-      isChecked = true;
-    } else if (status == 1) {
-      isChecked = false;
-    } else {
-      throw Exception('Unknown status');
-    }
     return Stack(
       children: [
         Container(
           width: 350,
           height: 65,
           decoration: BoxDecoration(
-            color: getUrgentColor(urgent), //urgent
+            color: getUrgentColor(widget.urgent), //urgent
             borderRadius: BorderRadius.circular(15),
           ),
           child: Padding(
@@ -75,7 +92,7 @@ class TaskWidget extends StatelessWidget {
                 Container(
                   width: 45,
                   height: 45,
-                  child: getTypeIcon(type),
+                  child: getTypeIcon(widget.type),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,7 +104,7 @@ class TaskWidget extends StatelessWidget {
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          name, //name
+                          widget.name, //name
                           softWrap: true,
                           style: const TextStyle(
                             fontSize: 16,
@@ -100,7 +117,7 @@ class TaskWidget extends StatelessWidget {
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          finishDate, //finishDate
+                          widget.finishDate, //finishDate
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w600,
@@ -123,7 +140,7 @@ class TaskWidget extends StatelessWidget {
                       checkColor: Colors.black,
                       activeColor: enabledColor,
                       onChanged: (bool? value) {
-                        onChecked(value!);
+                        widget.onChecked(value!);
                       },
                     ),
                   ),

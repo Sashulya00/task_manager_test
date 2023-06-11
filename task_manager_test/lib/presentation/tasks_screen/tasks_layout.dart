@@ -18,7 +18,6 @@ const buttonWidth = 140.0;
 const buttonHeight = 50.0;
 
 class _TasksLayoutState extends State<TasksLayout> {
-  static const buttonTitle = "";
 
   @override
   void initState() {
@@ -26,7 +25,7 @@ class _TasksLayoutState extends State<TasksLayout> {
     super.initState();
   }
 
-  int selectedTab = 0;
+  var selectedTab = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +75,7 @@ class _TasksLayoutState extends State<TasksLayout> {
                           firstTabTitle: "Усі",
                           secondTabTitle: "Робочі",
                           thirdTabTitle: "Особисті",
+                          selectedTab: selectedTab,
                           onChanged: (value) => setState(() => selectedTab = value),
                         ),
                         Expanded(
