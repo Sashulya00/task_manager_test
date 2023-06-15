@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:task_manager_test/business_logic/bloc/add_task/add_task_bloc.dart';
+import 'package:task_manager_test/data/model/task_model.dart';
 import 'package:task_manager_test/data/repository/repository.dart';
 import 'package:task_manager_test/presentation/tasks_screen/tasks_layout.dart';
 import 'package:task_manager_test/presentation/widgets/background_widget.dart';
@@ -13,7 +14,8 @@ import 'package:task_manager_test/presentation/widgets/primary_button_widget.dar
 import 'package:task_manager_test/setup_service_locator.dart';
 
 class AddGoalScreen extends StatelessWidget {
-  const AddGoalScreen({Key? key}) : super(key: key);
+  const AddGoalScreen({super.key, this.model});
+  final TaskModel? model;
 
   @override
   Widget build(BuildContext context) {
@@ -21,14 +23,18 @@ class AddGoalScreen extends StatelessWidget {
       lazy: false,
       create: (_) => AddTaskBloc(serviceLocator<Repository>()),
       child: Builder(builder: (context) {
-        return const AddGoalLayout();
+        return AddGoalLayout(
+          model: model,
+        );
       }),
     );
   }
 }
 
 class AddGoalLayout extends StatefulWidget {
-  const AddGoalLayout({Key? key}) : super(key: key);
+  final TaskModel? model;
+
+  const AddGoalLayout({super.key, this.model});
 
   @override
   State<AddGoalLayout> createState() => _AddGoalLayoutState();
@@ -42,6 +48,7 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
   bool isUrgent = false;
   static const datePickerTitle = 'Дата завершення:';
   XFile? pickedImagePath;
+  final _nameController = TextEditingController();
 
   Future<void> selectDate() async {
     final DateTime? selectedDate = await showDatePicker(
@@ -57,6 +64,16 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
         dateTime = selectedDate;
       });
     }
+  }
+
+  @override
+  void initState() {
+    final nameCheck = widget.model?.name;
+    if (nameCheck != null) {
+      name = nameCheck;
+      _nameController.text = name!;
+    }
+    super.initState();
   }
 
   Future<void> getImage() async {
@@ -194,6 +211,7 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
   }
 
   Widget get nameWidget => TextFormField(
+        controller: _nameController,
         onChanged: (value) => setState(() {
           name = value;
         }),

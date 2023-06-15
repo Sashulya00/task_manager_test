@@ -18,7 +18,6 @@ const buttonWidth = 140.0;
 const buttonHeight = 50.0;
 
 class _TasksLayoutState extends State<TasksLayout> {
-
   @override
   void initState() {
     context.read<TaskListBloc>().add(LoadTaskList());
@@ -36,7 +35,7 @@ class _TasksLayoutState extends State<TasksLayout> {
         onPressed: () async {
           final result = await Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => const AddGoalScreen()),
+            MaterialPageRoute(builder: (_) => AddGoalScreen()),
           );
           if (mounted) context.read<TaskListBloc>().add(LoadTaskList());
         },
@@ -85,18 +84,29 @@ class _TasksLayoutState extends State<TasksLayout> {
                             itemBuilder: (_, index) {
                               final item = list[index];
                               return Center(
-                                child: TaskWidget(
-                                  urgent: item.urgent!,
-                                  type: item.type!,
-                                  status: item.status!,
-                                  name: item.name!,
-                                  finishDate: item.finishDate.toString() ?? '',
-                                  onChecked: (value) => context.read<TaskListBloc>().add(
-                                        ChangeTaskButtonPressed(
-                                          isChecked: value,
-                                          taskId: item.taskId,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) => AddGoalScreen(
+                                                model: item,
+                                              )),
+                                    );
+                                  },
+                                  child: TaskWidget(
+                                    urgent: item.urgent!,
+                                    type: item.type!,
+                                    status: item.status!,
+                                    name: item.name!,
+                                    finishDate: item.finishDate.toString() ?? '',
+                                    onChecked: (value) => context.read<TaskListBloc>().add(
+                                          ChangeTaskButtonPressed(
+                                            isChecked: value,
+                                            taskId: item.taskId,
+                                          ),
                                         ),
-                                      ),
+                                  ),
                                 ),
                               );
                             },

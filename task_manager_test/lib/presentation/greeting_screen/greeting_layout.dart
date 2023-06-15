@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:task_manager_test/data/repository/repository_impl.dart';
-import 'package:task_manager_test/data/services/network_services_impl.dart';
 import 'package:task_manager_test/presentation/tasks_screen/tasks_screen.dart';
 import 'package:task_manager_test/presentation/widgets/background_widget.dart';
 import 'package:task_manager_test/presentation/widgets/primary_button_widget.dart';
