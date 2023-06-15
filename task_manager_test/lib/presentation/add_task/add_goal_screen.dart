@@ -15,6 +15,7 @@ import 'package:task_manager_test/setup_service_locator.dart';
 
 class AddGoalScreen extends StatelessWidget {
   const AddGoalScreen({super.key, this.model});
+
   final TaskModel? model;
 
   @override
@@ -42,8 +43,6 @@ class AddGoalLayout extends StatefulWidget {
 
 class _AddGoalLayoutState extends State<AddGoalLayout> {
   int? type;
-  String? name;
-  String? desc;
   DateTime? dateTime;
   bool isUrgent = false;
   static const datePickerTitle = 'Дата завершення:';
@@ -69,22 +68,14 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
 
   @override
   void initState() {
-    final nameCheck = widget.model?.name;
-    if (nameCheck != null) {
-      name = nameCheck;
-      _nameController.text = name!;
-    }
-
-    final descCheck = widget.model?.description;
-    if (descCheck != null) {
-      desc = descCheck;
-      _descController.text = desc!;
-    }
-
-    final isUrgentCheck = widget.model?.urgent;
-    isUrgent = isUrgentCheck != null ? (isUrgentCheck == 1) : false;
-
     super.initState();
+    if (widget.model?.name != null) _nameController.text = widget.model!.name!;
+    if (widget.model?.description != null) {
+      _descController.text = widget.model!.description!;
+    }
+
+    isUrgent = widget.model?.urgent == 1;
+    type = widget.model?.type;
   }
 
   Future<void> getImage() async {
@@ -112,7 +103,7 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
             Expanded(
               child: RadioListTile(
                 value: 1,
-                title: Text('Робочі'),
+                title: const Text('Робочі'),
                 groupValue: type,
                 onChanged: (value) => setState(() => type = value),
               ),
@@ -120,7 +111,7 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
             Expanded(
               child: RadioListTile(
                 value: 2,
-                title: Text('Особисті'),
+                title: const Text('Особисті'),
                 groupValue: type,
                 onChanged: (value) => setState(() => type = value),
               ),
@@ -134,10 +125,7 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
           controller: _descController,
           minLines: 3,
           maxLines: 3,
-          onChanged: (value) {
-            desc = value;
-          },
-          decoration: InputDecoration(
+          decoration: const InputDecoration(
             contentPadding: EdgeInsets.all(20),
             hintText: 'Додати опис...',
             hintStyle: TextStyle(
@@ -151,7 +139,7 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
         CheckboxListTile(
           controlAffinity: ListTileControlAffinity.leading,
           value: isUrgent,
-          title: Text('Термінове'),
+          title: const Text('Термінове'),
           onChanged: (value) => setState(() {
             isUrgent = value!;
           }),
@@ -164,21 +152,24 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
             buttonWidth: buttonWidth,
             buttonHeight: buttonHeight,
             onPressed: () async {
-              if (type != null && desc != null && name != null) {
+              if (type != null &&
+                  _descController.text.isNotEmpty &&
+                  _nameController.text.isNotEmpty) {
                 List<int> imageBytes = await pickedImagePath!.readAsBytes();
 
                 String base64Image = base64Encode(imageBytes);
                 final event = AddTaskButtonPressed(
-                  name: name!,
+                  name: _nameController.text,
                   type: type!,
                   isUrgent: isUrgent,
-                  desc: desc!,
+                  desc: _descController.text,
                   photoEncoded: base64Image,
                   endDate: dateTime,
                 );
-                context.read<AddTaskBloc>().add(event);
+                if (mounted) context.read<AddTaskBloc>().add(event);
               } else {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Enter valid data')));
+                ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Enter valid data')));
               }
             },
             buttonTitle: 'Створити'),
@@ -193,7 +184,7 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Прикріпити файл'),
+                  const Text('Прикріпити файл'),
                   if (pickedImagePath != null)
                     Image.file(
                       File(pickedImagePath!.path),
@@ -224,10 +215,7 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
 
   Widget get nameWidget => TextFormField(
         controller: _nameController,
-        onChanged: (value) => setState(() {
-          name = value;
-        }),
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           hintText: 'Назва задачі',
           hintStyle: TextStyle(color: Colors.black),
         ),
@@ -238,11 +226,14 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
     return BlocListener<AddTaskBloc, AddTaskState>(
       listener: (context, state) {
         if (state is AddTaskSuccess) Navigator.of(context).pop(true);
-        if (state is AddTaskError) ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error')));
+        if (state is AddTaskError) {
+          ScaffoldMessenger.of(context)
+              .showSnackBar(const SnackBar(content: Text('Error')));
+        }
       },
       child: Stack(
         children: [
-          BackgroundWidget(),
+          const BackgroundWidget(),
           Scaffold(
             backgroundColor: Colors.transparent,
             appBar: AppBar(
@@ -251,7 +242,7 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
               centerTitle: true,
               elevation: 0,
               leading: IconButton(
-                icon: Icon(
+                icon: const Icon(
                   Icons.arrow_back,
                   color: Colors.yellow,
                 ),
@@ -260,7 +251,9 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
             ),
             body: BlocBuilder<AddTaskBloc, AddTaskState>(
               builder: (context, state) {
-                if (state is AddTaskLoading) return Center(child: CircularProgressIndicator());
+                if (state is AddTaskLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                }
                 return SingleChildScrollView(
                   child: Column(
                     children: [
