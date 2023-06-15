@@ -49,6 +49,7 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
   static const datePickerTitle = 'Дата завершення:';
   XFile? pickedImagePath;
   final _nameController = TextEditingController();
+  final _descController = TextEditingController();
 
   Future<void> selectDate() async {
     final DateTime? selectedDate = await showDatePicker(
@@ -73,6 +74,16 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
       name = nameCheck;
       _nameController.text = name!;
     }
+
+    final descCheck = widget.model?.description;
+    if (descCheck != null) {
+      desc = descCheck;
+      _descController.text = desc!;
+    }
+
+    final isUrgentCheck = widget.model?.urgent;
+    isUrgent = isUrgentCheck != null ? (isUrgentCheck == 1) : false;
+
     super.initState();
   }
 
@@ -120,6 +131,7 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
 
   Widget get decription => yellowCard(
         TextFormField(
+          controller: _descController,
           minLines: 3,
           maxLines: 3,
           onChanged: (value) {
