@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -77,6 +76,11 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
     isUrgent = widget.model?.urgent == 1;
     type = widget.model?.type;
     dateTime = widget.model?.finishDate;
+
+    if (widget.model?.file != null && widget.model!.file!.isNotEmpty) {
+      final image = base64Decode(widget.model!.file!);
+      pickedImagePath = XFile.fromData(image);
+    }
   }
 
   Future<void> getImage() async {
@@ -149,31 +153,34 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
 
   Widget saveButton(BuildContext context) => yellowCard(
         PrimaryButtonWidget(
-            buttonColor: primaryColor,
-            buttonWidth: buttonWidth,
-            buttonHeight: buttonHeight,
-            onPressed: () async {
-              if (type != null &&
-                  _descController.text.isNotEmpty &&
-                  _nameController.text.isNotEmpty) {
-                List<int> imageBytes = await pickedImagePath!.readAsBytes();
+          buttonColor: primaryColor,
+          buttonWidth: buttonWidth,
+          buttonHeight: buttonHeight,
+          buttonTitle: 'Створити',
+          onPressed: () async {
+            final isValid = type != null &&
+                _descController.text.isNotEmpty &&
+                _nameController.text.isNotEmpty;
+            if (!isValid) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Enter valid data')),
+              );
+            } else {
+              final imageBytes = await pickedImagePath?.readAsBytes();
 
-                String base64Image = base64Encode(imageBytes);
-                final event = AddTaskButtonPressed(
-                  name: _nameController.text,
-                  type: type!,
-                  isUrgent: isUrgent,
-                  desc: _descController.text,
-                  photoEncoded: base64Image,
-                  endDate: dateTime,
-                );
-                if (mounted) context.read<AddTaskBloc>().add(event);
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Enter valid data')));
-              }
-            },
-            buttonTitle: 'Створити'),
+              final event = AddTaskButtonPressed(
+                name: _nameController.text,
+                type: type!,
+                isUrgent: isUrgent,
+                desc: _descController.text,
+                endDate: dateTime,
+                photoEncoded:
+                    imageBytes == null ? null : base64Encode(imageBytes),
+              );
+              if (mounted) context.read<AddTaskBloc>().add(event);
+            }
+          },
+        ),
       );
 
   Widget get file => GestureDetector(
@@ -187,9 +194,22 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
                 children: [
                   const Text('Прикріпити файл'),
                   if (pickedImagePath != null)
-                    Image.file(
-                      File(pickedImagePath!.path),
-                      height: 200,
+                    FutureBuilder(
+                      future: pickedImagePath?.readAsBytes(),
+                      builder: (context, snapshot) {
+                        final isLoaded =
+                            snapshot.connectionState == ConnectionState.done &&
+                                snapshot.hasData;
+
+                        return SizedBox.square(
+                          dimension: 200,
+                          child: Center(
+                            child: isLoaded
+                                ? Image.memory(snapshot.data!, height: 200)
+                                : const CircularProgressIndicator(),
+                          ),
+                        );
+                      },
                     ),
                 ],
               ),
