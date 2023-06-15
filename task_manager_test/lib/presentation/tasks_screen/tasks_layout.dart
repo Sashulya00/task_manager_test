@@ -89,7 +89,7 @@ class _TasksLayoutState extends State<TasksLayout> {
                               return Center(
                                 child: GestureDetector(
                                   onTap: () async {
-                                    await Navigator.push<int>(
+                                    await Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (_) => AddGoalScreen(

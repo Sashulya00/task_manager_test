@@ -93,7 +93,6 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
   }
 
   Future<void> deleteTask(String taskId) async {
-    // todo: call bloc here
     return context.read<AddTaskBloc>().add(DeleteTaskButtonPressed(taskId));
   }
 
@@ -298,8 +297,30 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
                     Icons.check,
                     color: Colors.yellow,
                   ),
-                  onPressed: () {
-                    // todo: update task here with bloc
+                  onPressed: () async {
+                    final isValid = type != null &&
+                        _descController.text.isNotEmpty &&
+                        _nameController.text.isNotEmpty;
+                    if (!isValid) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Enter valid data')),
+                      );
+                    } else {
+                      final imageBytes = await pickedImagePath?.readAsBytes();
+
+                      final event = UpdateTaskButtonPressed(
+                        taskId: widget.model!.taskId,
+                        name: _nameController.text,
+                        type: type!,
+                        isUrgent: isUrgent,
+                        desc: _descController.text,
+                        endDate: dateTime,
+                        photoEncoded: imageBytes == null
+                            ? null
+                            : base64Encode(imageBytes),
+                      );
+                      if (mounted) context.read<AddTaskBloc>().add(event);
+                    }
                   },
                 ),
               ],

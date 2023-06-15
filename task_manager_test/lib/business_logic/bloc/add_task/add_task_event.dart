@@ -21,6 +21,26 @@ class AddTaskButtonPressed extends AddTaskEvent {
   });
 }
 
+class UpdateTaskButtonPressed extends AddTaskEvent {
+  final String taskId;
+  final String name;
+  final int type;
+  final bool isUrgent;
+  final String desc;
+  final String? photoEncoded;
+  final DateTime? endDate;
+
+  UpdateTaskButtonPressed({
+    required this.taskId,
+    required this.name,
+    required this.type,
+    required this.isUrgent,
+    required this.desc,
+    this.photoEncoded,
+    this.endDate,
+  });
+}
+
 class DeleteTaskButtonPressed extends AddTaskEvent {
   final String taskId;
 
