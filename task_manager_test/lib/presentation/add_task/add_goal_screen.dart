@@ -42,10 +42,10 @@ class AddGoalLayout extends StatefulWidget {
 }
 
 class _AddGoalLayoutState extends State<AddGoalLayout> {
+  static const datePickerTitle = 'Дата завершення:';
   int? type;
   DateTime? dateTime;
   bool isUrgent = false;
-  static const datePickerTitle = 'Дата завершення:';
   XFile? pickedImagePath;
   final _nameController = TextEditingController();
   final _descController = TextEditingController();
@@ -76,6 +76,7 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
 
     isUrgent = widget.model?.urgent == 1;
     type = widget.model?.type;
+    dateTime = widget.model?.finishDate;
   }
 
   Future<void> getImage() async {
