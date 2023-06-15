@@ -20,3 +20,9 @@ class AddTaskButtonPressed extends AddTaskEvent {
     this.endDate,
   });
 }
+
+class DeleteTaskButtonPressed extends AddTaskEvent {
+  final String taskId;
+
+  DeleteTaskButtonPressed(this.taskId);
+}

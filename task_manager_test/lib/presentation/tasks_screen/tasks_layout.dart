@@ -14,6 +14,7 @@ class TasksLayout extends StatefulWidget {
 }
 
 const primaryColor = Color(0xffffd600);
+const secondaryColor = Color(0xffFF8989);
 const buttonWidth = 140.0;
 const buttonHeight = 50.0;
 
@@ -35,7 +36,7 @@ class _TasksLayoutState extends State<TasksLayout> {
         onPressed: () async {
           final result = await Navigator.push(
             context,
-            MaterialPageRoute(builder: (_) => AddGoalScreen()),
+            MaterialPageRoute(builder: (_) => const AddGoalScreen()),
           );
           if (mounted) context.read<TaskListBloc>().add(LoadTaskList());
         },
@@ -75,37 +76,47 @@ class _TasksLayoutState extends State<TasksLayout> {
                           secondTabTitle: "Робочі",
                           thirdTabTitle: "Особисті",
                           selectedTab: selectedTab,
-                          onChanged: (value) => setState(() => selectedTab = value),
+                          onChanged: (value) =>
+                              setState(() => selectedTab = value),
                         ),
                         Expanded(
                           child: ListView.separated(
-                            separatorBuilder: (_, __) => const Divider(thickness: 4),
+                            separatorBuilder: (_, __) =>
+                                const Divider(thickness: 4),
                             itemCount: (list.length),
                             itemBuilder: (_, index) {
                               final item = list[index];
                               return Center(
                                 child: GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
+                                  onTap: () async {
+                                    await Navigator.push<int>(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (_) => AddGoalScreen(
-                                                model: item,
-                                              )),
+                                        builder: (_) => AddGoalScreen(
+                                          model: item,
+                                        ),
+                                      ),
                                     );
+                                    if (mounted) {
+                                      context.read<TaskListBloc>().add(
+                                            LoadTaskList(),
+                                          );
+                                    }
                                   },
                                   child: TaskWidget(
                                     urgent: item.urgent!,
                                     type: item.type!,
                                     status: item.status!,
                                     name: item.name!,
-                                    finishDate: item.finishDate.toString() ?? '',
-                                    onChecked: (value) => context.read<TaskListBloc>().add(
-                                          ChangeTaskButtonPressed(
-                                            isChecked: value,
-                                            taskId: item.taskId,
-                                          ),
-                                        ),
+                                    finishDate:
+                                        item.finishDate.toString() ?? '',
+                                    onChecked: (value) =>
+                                        context.read<TaskListBloc>().add(
+                                              ChangeTaskButtonPressed(
+                                                isChecked: value,
+                                                taskId: item.taskId,
+                                              ),
+                                            ),
                                   ),
                                 ),
                               );

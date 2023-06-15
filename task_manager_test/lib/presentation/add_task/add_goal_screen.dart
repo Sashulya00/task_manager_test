@@ -92,6 +92,11 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
     });
   }
 
+  Future<void> deleteTask(String taskId) async {
+    // todo: call bloc here
+    return context.read<AddTaskBloc>().add(DeleteTaskButtonPressed(taskId));
+  }
+
   Widget yellowCard(Widget child) => Padding(
         padding: const EdgeInsets.only(bottom: 20),
         child: DecoratedBox(
@@ -148,38 +153,6 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
           onChanged: (value) => setState(() {
             isUrgent = value!;
           }),
-        ),
-      );
-
-  Widget saveButton(BuildContext context) => yellowCard(
-        PrimaryButtonWidget(
-          buttonColor: primaryColor,
-          buttonWidth: buttonWidth,
-          buttonHeight: buttonHeight,
-          buttonTitle: 'Створити',
-          onPressed: () async {
-            final isValid = type != null &&
-                _descController.text.isNotEmpty &&
-                _nameController.text.isNotEmpty;
-            if (!isValid) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Enter valid data')),
-              );
-            } else {
-              final imageBytes = await pickedImagePath?.readAsBytes();
-
-              final event = AddTaskButtonPressed(
-                name: _nameController.text,
-                type: type!,
-                isUrgent: isUrgent,
-                desc: _descController.text,
-                endDate: dateTime,
-                photoEncoded:
-                    imageBytes == null ? null : base64Encode(imageBytes),
-              );
-              if (mounted) context.read<AddTaskBloc>().add(event);
-            }
-          },
         ),
       );
 
@@ -242,6 +215,56 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
         ),
       );
 
+  bool get isEditFlow => widget.model != null;
+
+  Widget saveButton(BuildContext context) => yellowCard(
+        PrimaryButtonWidget(
+          buttonColor: primaryColor,
+          buttonWidth: buttonWidth,
+          buttonHeight: buttonHeight,
+          buttonTitle: 'Створити',
+          onPressed: () async {
+            final isValid = type != null &&
+                _descController.text.isNotEmpty &&
+                _nameController.text.isNotEmpty;
+            if (!isValid) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Enter valid data')),
+              );
+            } else {
+              final imageBytes = await pickedImagePath?.readAsBytes();
+
+              final event = AddTaskButtonPressed(
+                name: _nameController.text,
+                type: type!,
+                isUrgent: isUrgent,
+                desc: _descController.text,
+                endDate: dateTime,
+                photoEncoded:
+                    imageBytes == null ? null : base64Encode(imageBytes),
+              );
+              if (mounted) context.read<AddTaskBloc>().add(event);
+            }
+          },
+        ),
+      );
+
+  Widget deleteButton(BuildContext context) => yellowCard(
+        PrimaryButtonWidget(
+          buttonColor: secondaryColor,
+          buttonWidth: buttonWidth,
+          buttonHeight: buttonHeight,
+          buttonTitle: 'Видалити',
+          onPressed: () {
+            deleteTask(widget.model!.taskId);
+            Navigator.pop(context);
+          },
+        ),
+      );
+
+  Widget get bottomButton =>
+      isEditFlow ? deleteButton(context) : saveButton(context);
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<AddTaskBloc, AddTaskState>(
@@ -269,6 +292,17 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
                 ),
                 onPressed: () => Navigator.pop(context),
               ),
+              actions: [
+                IconButton(
+                  icon: const Icon(
+                    Icons.check,
+                    color: Colors.yellow,
+                  ),
+                  onPressed: () {
+                    // todo: update task here with bloc
+                  },
+                ),
+              ],
             ),
             body: BlocBuilder<AddTaskBloc, AddTaskState>(
               builder: (context, state) {
@@ -283,7 +317,7 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
                       file,
                       date,
                       important,
-                      saveButton(context),
+                      bottomButton,
                     ],
                   ),
                 );
