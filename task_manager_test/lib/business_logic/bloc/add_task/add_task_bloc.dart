@@ -28,8 +28,8 @@ class AddTaskBloc extends Bloc<AddTaskEvent, AddTaskState> {
             urgent: event.isUrgent ? 1 : 0,
             syncTime: DateTime.now(),
           );
-          await repository.addTask(model);
-          emit(AddTaskSuccess());
+          final list = await repository.addTask(model);
+          emit(AddTaskSuccess(list));
         } catch (error) {
           emit(AddTaskError());
           rethrow;
@@ -52,8 +52,8 @@ class AddTaskBloc extends Bloc<AddTaskEvent, AddTaskState> {
             urgent: event.isUrgent ? 1 : 0,
             syncTime: DateTime.now(),
           );
-          await repository.addTask(model);
-          emit(AddTaskSuccess());
+          final list = await repository.addTask(model);
+          emit(AddTaskSuccess(list));
         } catch (error) {
           emit(AddTaskError());
           rethrow;
@@ -64,8 +64,8 @@ class AddTaskBloc extends Bloc<AddTaskEvent, AddTaskState> {
       (event, emit) async {
         try {
           emit(AddTaskLoading());
-          await repository.deleteTask(event.taskId);
-          emit(AddTaskSuccess());
+          final list = await repository.deleteTask(event.taskId);
+          emit(AddTaskSuccess(list));
         } catch (error) {
           emit(AddTaskError());
           rethrow;

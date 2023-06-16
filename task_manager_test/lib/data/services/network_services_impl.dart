@@ -21,42 +21,36 @@ class NetworkServiceImpl implements NetworkService {
   }
 
   @override
-  Future<void> addTask(TaskModel model) async {
+  Future<List> addTask(TaskModel model) async {
     final data = model.toJson();
     final url = Uri.parse(_apiUrl);
     final response = await post(url, body: jsonEncode([data]));
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      print('Data sent successfully.');
-    } else {
-      print('Request addTask failed with status: ${response.statusCode}.');
-    }
+    final responseMap = json.decode(response.body) as Map<String, dynamic>;
+    final listMap = List.from(responseMap[_dataKey]);
+    return listMap;
   }
 
   @override
-  Future<void> changeTask(String taskId, bool isChecked) async {
+  Future<List> changeTask(String taskId, bool isChecked) async {
     final data = {"status": isChecked ? 2 : 1};
     final response = await put(
       Uri.parse('$_apiUrl$taskId'),
       body: jsonEncode(data),
     );
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      print('Data change successfully');
-    } else {
-      print('Request changeTask failed with status: ${response.statusCode}.');
-    }
+    final responseMap = json.decode(response.body) as Map<String, dynamic>;
+    final listMap = List.from(responseMap[_dataKey]);
+    return listMap;
   }
 
   @override
-  Future<void> deleteTask(String taskId) async {
+  Future<List> deleteTask(String taskId) async {
     final data = {"taskId": taskId};
     final response = await delete(
       Uri.parse('$_apiUrl$taskId'),
       body: jsonEncode(data),
     );
-    if (response.statusCode >= 200 && response.statusCode < 300) {
-      print('Data delete successfully');
-    } else {
-      print('Request deleteTask failed with status: ${response.statusCode}.');
-    }
+    final responseMap = json.decode(response.body) as Map<String, dynamic>;
+    final listMap = List.from(responseMap[_dataKey]);
+    return listMap;
   }
 }

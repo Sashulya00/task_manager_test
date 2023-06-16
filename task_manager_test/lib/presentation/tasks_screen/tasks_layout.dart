@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_manager_test/business_logic/bloc/task_list_bloc.dart';
+import 'package:task_manager_test/data/model/task_model.dart';
 import 'package:task_manager_test/presentation/add_task/add_goal_screen.dart';
 import 'package:task_manager_test/presentation/widgets/background_widget.dart';
 import 'package:task_manager_test/presentation/widgets/select_button_widget.dart';
@@ -32,11 +33,15 @@ class _TasksLayoutState extends State<TasksLayout> {
         backgroundColor: primaryColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         onPressed: () async {
-          final result = await Navigator.push(
+          final list = await Navigator.push<List<TaskModel>>(
             context,
             MaterialPageRoute(builder: (_) => const AddGoalScreen()),
           );
-          if (mounted) context.read<TaskListBloc>().add(LoadTaskList());
+          if (mounted && list != null) {
+            context.read<TaskListBloc>().add(
+                  LoadedTaskLostFromSecondsScreen(list),
+                );
+          }
         },
         child: const Icon(
           Icons.add,
@@ -47,76 +52,92 @@ class _TasksLayoutState extends State<TasksLayout> {
         children: [
           const BackgroundWidget(),
           BlocBuilder<TaskListBloc, TaskListState>(
+            buildWhen: (_, __) => true,
             builder: (context, state) {
               if (state is InitialState) {
                 return const Center(child: Text("Waiting"));
               } else if (state is LoadingState) {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is ErrorState) {
-                return const Center(child: Text("error"));
-              } else if (state is LoadedState) {
-                final list = state.taskList;
-                return Stack(
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(list.length.toString()),
-                    Column(
-                      children: [
-                        SelectButtonWidget(
-                          firstTabTitle: "Усі",
-                          secondTabTitle: "Робочі",
-                          thirdTabTitle: "Особисті",
-                          selectedTab: state.selectedTab,
-                          onChanged: (value) {
-                            context.read<TaskListBloc>().add(
-                                  TaskListTypeChanged(value),
-                                );
-                          },
+                    const Center(child: Text("error")),
+                    Center(child: Text(state.error.toString())),
+                    Center(
+                      child: TextButton(
+                        onPressed: () => context.read<TaskListBloc>().add(
+                              LoadTaskList(),
+                            ),
+                        child: const Text('refresh'),
+                      ),
+                    ),
+                  ],
+                );
+              } else if (state is LoadedState) {
+                final list = state.filteredTasks;
+                return Column(
+                  children: [
+                    SelectButtonWidget(
+                      firstTabTitle: "Усі",
+                      secondTabTitle: "Робочі",
+                      thirdTabTitle: "Особисті",
+                      selectedTab: state.selectedTab,
+                      onChanged: (value) {
+                        context.read<TaskListBloc>().add(
+                              TaskListTypeChanged(value),
+                            );
+                      },
+                    ),
+                    Expanded(
+                      child: ListView.separated(
+                        key: Key(
+                          list.fold<String>(
+                              'ListKey', (p, e) => "$p ${e.taskId} "),
                         ),
-                        Expanded(
-                          child: ListView.separated(
-                            separatorBuilder: (_, __) =>
-                                const Divider(thickness: 4),
-                            itemCount: (list.length),
-                            itemBuilder: (_, index) {
-                              final item = list[index];
-                              return Center(
-                                child: GestureDetector(
-                                  onTap: () async {
-                                    await Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => AddGoalScreen(
-                                          model: item,
-                                        ),
-                                      ),
-                                    );
-                                    if (mounted) {
-                                      context.read<TaskListBloc>().add(
-                                            LoadTaskList(),
-                                          );
-                                    }
-                                  },
-                                  child: TaskWidget(
-                                    urgent: item.urgent!,
-                                    type: item.type!,
-                                    status: item.status!,
-                                    name: item.name!,
-                                    finishDate:
-                                        item.finishDate.toString() ?? '',
-                                    onChecked: (value) =>
-                                        context.read<TaskListBloc>().add(
-                                              ChangeTaskButtonPressed(
-                                                isChecked: value,
-                                                taskId: item.taskId,
-                                              ),
-                                            ),
+                        separatorBuilder: (_, __) =>
+                            const Divider(thickness: 4),
+                        itemCount: (list.length),
+                        itemBuilder: (_, index) {
+                          final item = list[index];
+                          return Center(
+                            child: GestureDetector(
+                              onTap: () async {
+                                final list =
+                                    await Navigator.push<List<TaskModel>>(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => AddGoalScreen(
+                                      model: item,
+                                    ),
                                   ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ],
+                                );
+                                if (mounted && list != null) {
+                                  context.read<TaskListBloc>().add(
+                                        LoadedTaskLostFromSecondsScreen(
+                                          list,
+                                        ),
+                                      );
+                                }
+                              },
+                              child: TaskWidget(
+                                urgent: item.urgent!,
+                                type: item.type!,
+                                status: item.status!,
+                                name: item.name!,
+                                finishDate: item.finishDate.toString() ?? '',
+                                onChecked: (value) =>
+                                    context.read<TaskListBloc>().add(
+                                          ChangeTaskButtonPressed(
+                                            isChecked: value,
+                                            taskId: item.taskId,
+                                          ),
+                                        ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ],
                 );

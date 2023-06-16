@@ -18,17 +18,32 @@ class RepositoryImpl implements Repository {
   }
 
   @override
-  Future<void> addTask(TaskModel model) {
-    return networkService.addTask(model);
+  Future<List<TaskModel>> addTask(TaskModel model) async {
+    final listMap = await networkService.addTask(model);
+    final listOfModels = <TaskModel>[];
+    for (final json in listMap) {
+      listOfModels.add(TaskModel.fromJson(json));
+    }
+    return listOfModels;
   }
 
   @override
-  Future<void> changeTask(String taskId, bool isChecked) {
-    return networkService.changeTask(taskId, isChecked);
+  Future<List<TaskModel>> changeTask(String taskId, bool isChecked) async {
+    final listMap = await networkService.changeTask(taskId, isChecked);
+    final listOfModels = <TaskModel>[];
+    for (final json in listMap) {
+      listOfModels.add(TaskModel.fromJson(json));
+    }
+    return listOfModels;
   }
 
   @override
-  Future<void> deleteTask(String taskId) {
-    return networkService.deleteTask(taskId);
+  Future<List<TaskModel>> deleteTask(String taskId) async {
+    final listMap = await networkService.deleteTask(taskId);
+    final listOfModels = <TaskModel>[];
+    for (final json in listMap) {
+      listOfModels.add(TaskModel.fromJson(json));
+    }
+    return listOfModels;
   }
 }

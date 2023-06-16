@@ -299,7 +299,7 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
   Widget build(BuildContext context) {
     return BlocListener<AddTaskBloc, AddTaskState>(
       listener: (context, state) {
-        if (state is AddTaskSuccess) Navigator.of(context).pop(true);
+        if (state is AddTaskSuccess) Navigator.of(context).pop(state.taskLists);
         if (state is AddTaskError) {
           ScaffoldMessenger.of(context)
               .showSnackBar(const SnackBar(content: Text('Error')));

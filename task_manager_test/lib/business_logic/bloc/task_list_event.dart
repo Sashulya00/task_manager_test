@@ -20,3 +20,9 @@ class TaskListTypeChanged extends TaskListEvent {
 
   TaskListTypeChanged(this.type);
 }
+
+class LoadedTaskLostFromSecondsScreen extends TaskListEvent {
+  final List<TaskModel> list;
+
+  LoadedTaskLostFromSecondsScreen(this.list);
+}
