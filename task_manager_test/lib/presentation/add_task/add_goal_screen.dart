@@ -83,6 +83,8 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
     }
   }
 
+  bool get isEditFlow => widget.model != null;
+
   Future<void> getImage() async {
     ImagePicker picker = ImagePicker();
     XFile? pickedImage = await picker.pickImage(source: ImageSource.gallery);
@@ -97,9 +99,42 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
   }
 
   Future<void> deleteImage() async {
-    return context.read<AddTaskBloc>().add(
-          DeleteImageButtonPressed(widget.model!),
-        );
+    setState(() {
+      pickedImagePath = null;
+    });
+  }
+
+  void saveTask() async {
+    final isValid = type != null &&
+        _descController.text.isNotEmpty &&
+        _nameController.text.isNotEmpty;
+    if (!isValid) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Enter valid data')),
+      );
+    } else {
+      final imageBytes = await pickedImagePath?.readAsBytes();
+      final encodedImage = imageBytes == null ? null : base64Encode(imageBytes);
+      final event = isEditFlow
+          ? UpdateTaskButtonPressed(
+              taskId: widget.model!.taskId,
+              name: _nameController.text,
+              type: type!,
+              isUrgent: isUrgent,
+              desc: _descController.text,
+              endDate: dateTime,
+              photoEncoded: encodedImage,
+            )
+          : AddTaskButtonPressed(
+              name: _nameController.text,
+              type: type!,
+              isUrgent: isUrgent,
+              desc: _descController.text,
+              endDate: dateTime,
+              photoEncoded: encodedImage,
+            );
+      if (mounted) context.read<AddTaskBloc>().add(event);
+    }
   }
 
   Widget yellowCard(Widget child) => Padding(
@@ -163,44 +198,47 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
 
   Widget get file => GestureDetector(
         onTap: getImage,
-        child: yellowCard(Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('Прикріпити файл'),
-                  if (pickedImagePath != null)
-                    FutureBuilder(
-                      future: pickedImagePath?.readAsBytes(),
-                      builder: (context, snapshot) {
-                        final isLoaded =
-                            snapshot.connectionState == ConnectionState.done &&
-                                snapshot.hasData;
+        child: yellowCard(
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Прикріпити файл'),
+                    if (pickedImagePath != null)
+                      FutureBuilder(
+                        future: pickedImagePath?.readAsBytes(),
+                        builder: (context, snapshot) {
+                          final isLoaded = snapshot.connectionState ==
+                                  ConnectionState.done &&
+                              snapshot.hasData;
 
-                        return SizedBox.square(
-                          dimension: 200,
-                          child: Center(
-                            child: isLoaded
-                                ? Image.memory(snapshot.data!, height: 200)
-                                : const CircularProgressIndicator(),
-                          ),
-                        );
-                      },
-                    ),
-                ],
+                          return SizedBox.square(
+                            dimension: 200,
+                            child: Center(
+                              child: isLoaded
+                                  ? Image.memory(snapshot.data!, height: 200)
+                                  : const CircularProgressIndicator(),
+                            ),
+                          );
+                        },
+                      ),
+                  ],
+                ),
               ),
-            ),
-            IconButton(
-              alignment: Alignment.centerRight,
-              onPressed: deleteImage,
-              icon: const Icon(
-                IconData(0xf645, fontFamily: 'MaterialIcons'),
-              ),
-            ),
-          ],
-        )),
+              if (pickedImagePath != null)
+                IconButton(
+                  alignment: Alignment.centerRight,
+                  onPressed: deleteImage,
+                  icon: const Icon(
+                    IconData(0xf645, fontFamily: 'MaterialIcons'),
+                  ),
+                ),
+            ],
+          ),
+        ),
       );
 
   Widget get date {
@@ -227,38 +265,13 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
         ),
       );
 
-  bool get isEditFlow => widget.model != null;
-
   Widget saveButton(BuildContext context) => yellowCard(
         PrimaryButtonWidget(
-          buttonColor: primaryColor,
-          buttonWidth: buttonWidth,
-          buttonHeight: buttonHeight,
-          buttonTitle: 'Створити',
-          onPressed: () async {
-            final isValid = type != null &&
-                _descController.text.isNotEmpty &&
-                _nameController.text.isNotEmpty;
-            if (!isValid) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Enter valid data')),
-              );
-            } else {
-              final imageBytes = await pickedImagePath?.readAsBytes();
-
-              final event = AddTaskButtonPressed(
-                name: _nameController.text,
-                type: type!,
-                isUrgent: isUrgent,
-                desc: _descController.text,
-                endDate: dateTime,
-                photoEncoded:
-                    imageBytes == null ? null : base64Encode(imageBytes),
-              );
-              if (mounted) context.read<AddTaskBloc>().add(event);
-            }
-          },
-        ),
+            buttonColor: primaryColor,
+            buttonWidth: buttonWidth,
+            buttonHeight: buttonHeight,
+            buttonTitle: 'Створити',
+            onPressed: saveTask),
       );
 
   Widget deleteButton(BuildContext context) => yellowCard(
@@ -304,39 +317,14 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
                 ),
                 onPressed: () => Navigator.pop(context),
               ),
-              actions: [
-                IconButton(
-                  icon: const Icon(
-                    Icons.check,
-                    color: Colors.yellow,
-                  ),
-                  onPressed: () async {
-                    final isValid = type != null &&
-                        _descController.text.isNotEmpty &&
-                        _nameController.text.isNotEmpty;
-                    if (!isValid) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Enter valid data')),
-                      );
-                    } else {
-                      final imageBytes = await pickedImagePath?.readAsBytes();
-
-                      final event = UpdateTaskButtonPressed(
-                        taskId: widget.model!.taskId,
-                        name: _nameController.text,
-                        type: type!,
-                        isUrgent: isUrgent,
-                        desc: _descController.text,
-                        endDate: dateTime,
-                        photoEncoded: imageBytes == null
-                            ? null
-                            : base64Encode(imageBytes),
-                      );
-                      if (mounted) context.read<AddTaskBloc>().add(event);
-                    }
-                  },
-                ),
-              ],
+              actions: !isEditFlow
+                  ? null
+                  : [
+                      IconButton(
+                        onPressed: saveTask,
+                        icon: const Icon(Icons.check, color: Colors.yellow),
+                      )
+                    ],
             ),
             body: BlocBuilder<AddTaskBloc, AddTaskState>(
               builder: (context, state) {
