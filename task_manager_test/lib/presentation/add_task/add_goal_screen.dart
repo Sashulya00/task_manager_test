@@ -257,13 +257,18 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
     );
   }
 
-  Widget get nameWidget => TextFormField(
-        controller: _nameController,
-        decoration: const InputDecoration(
-          hintText: 'Назва задачі',
-          hintStyle: TextStyle(color: Colors.black),
-        ),
-      );
+  Widget get nameWidget => isEditFlow
+      ? Text(
+          widget.model!.name!,
+          style: const TextStyle(color: Colors.black),
+        )
+      : TextFormField(
+          controller: _nameController,
+          decoration: const InputDecoration(
+            hintText: 'Назва задачі',
+            hintStyle: TextStyle(color: Colors.black),
+          ),
+        );
 
   Widget saveButton(BuildContext context) => yellowCard(
         PrimaryButtonWidget(
