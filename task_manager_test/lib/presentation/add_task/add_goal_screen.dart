@@ -96,6 +96,12 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
     return context.read<AddTaskBloc>().add(DeleteTaskButtonPressed(taskId));
   }
 
+  Future<void> deleteImage() async {
+    return context.read<AddTaskBloc>().add(
+          DeleteImageButtonPressed(widget.model!),
+        );
+  }
+
   Widget yellowCard(Widget child) => Padding(
         padding: const EdgeInsets.only(bottom: 20),
         child: DecoratedBox(
@@ -184,6 +190,13 @@ class _AddGoalLayoutState extends State<AddGoalLayout> {
                       },
                     ),
                 ],
+              ),
+            ),
+            IconButton(
+              alignment: Alignment.centerRight,
+              onPressed: deleteImage,
+              icon: const Icon(
+                IconData(0xf645, fontFamily: 'MaterialIcons'),
               ),
             ),
           ],

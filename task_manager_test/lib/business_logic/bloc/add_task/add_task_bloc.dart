@@ -72,5 +72,17 @@ class AddTaskBloc extends Bloc<AddTaskEvent, AddTaskState> {
         }
       },
     );
+    on<DeleteImageButtonPressed>(
+      (event, emit) async {
+        try {
+          emit(AddTaskLoading());
+          await repository.addTask(event.model.copyWithoutImage());
+          emit(AddTaskSuccess());
+        } catch (error) {
+          emit(AddTaskError());
+          rethrow;
+        }
+      },
+    );
   }
 }

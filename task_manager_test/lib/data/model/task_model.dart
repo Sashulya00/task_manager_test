@@ -98,4 +98,17 @@ class TaskModel {
     if (syncTime != null) map['syncTime'] = syncTime!.toIso8601String();
     return map;
   }
+
+  TaskModel copyWithoutImage() => TaskModel(
+        id: id,
+        taskId: taskId,
+        status: status,
+        name: name,
+        type: type,
+        description: description,
+        file: null,
+        finishDate: finishDate,
+        urgent: urgent,
+        syncTime: syncTime,
+      );
 }

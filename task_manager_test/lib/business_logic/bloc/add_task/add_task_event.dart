@@ -46,3 +46,9 @@ class DeleteTaskButtonPressed extends AddTaskEvent {
 
   DeleteTaskButtonPressed(this.taskId);
 }
+
+class DeleteImageButtonPressed extends AddTaskEvent {
+  final TaskModel model;
+
+  DeleteImageButtonPressed(this.model);
+}
