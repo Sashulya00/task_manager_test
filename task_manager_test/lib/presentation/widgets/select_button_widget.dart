@@ -22,7 +22,8 @@ class SelectButtonWidget extends StatefulWidget {
   State<SelectButtonWidget> createState() => _SelectButtonWidgetState();
 }
 
-class _SelectButtonWidgetState extends State<SelectButtonWidget> with SingleTickerProviderStateMixin {
+class _SelectButtonWidgetState extends State<SelectButtonWidget>
+    with SingleTickerProviderStateMixin {
   late final TabController _controller;
 
   final circularRadius = BorderRadius.circular(40.0);
@@ -77,7 +78,8 @@ class _SelectButtonWidgetState extends State<SelectButtonWidget> with SingleTick
                     length: countTabs,
                     child: TabBar(
                       controller: _controller,
-                      onTap: (selected) => setState(() => _selectedIndex = selected),
+                      onTap: (selected) =>
+                          setState(() => _selectedIndex = selected),
                       unselectedLabelColor: Colors.black,
                       labelColor: Colors.black,
                       indicatorColor: Colors.transparent,
@@ -88,20 +90,32 @@ class _SelectButtonWidgetState extends State<SelectButtonWidget> with SingleTick
                       tabs: [
                         TabWidget(
                           tabsTitle: widget.firstTabTitle,
-                          customWidth: _selectedIndex == 0 ? widthButtonPlus : widthButton,
-                          customColor: _selectedIndex == 0 ? enabledColor : disabledColor,
+                          customWidth: _selectedIndex == 0
+                              ? widthButtonPlus
+                              : widthButton,
+                          customColor: _selectedIndex == 0
+                              ? enabledColor
+                              : disabledColor,
                           onChanged: () => onTap(0),
                         ),
                         TabWidget(
                           tabsTitle: widget.secondTabTitle,
-                          customWidth: _selectedIndex == 1 ? widthButtonPlus : widthButton,
-                          customColor: _selectedIndex == 1 ? enabledColor : disabledColor,
+                          customWidth: _selectedIndex == 1
+                              ? widthButtonPlus
+                              : widthButton,
+                          customColor: _selectedIndex == 1
+                              ? enabledColor
+                              : disabledColor,
                           onChanged: () => onTap(1),
                         ),
                         TabWidget(
                           tabsTitle: widget.thirdTabTitle,
-                          customWidth: _selectedIndex == 2 ? widthButtonPlus : widthButton,
-                          customColor: _selectedIndex == 2 ? enabledColor : disabledColor,
+                          customWidth: _selectedIndex == 2
+                              ? widthButtonPlus
+                              : widthButton,
+                          customColor: _selectedIndex == 2
+                              ? enabledColor
+                              : disabledColor,
                           onChanged: () => onTap(2),
                         ),
                       ],

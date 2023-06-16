@@ -25,8 +25,6 @@ class _TasksLayoutState extends State<TasksLayout> {
     super.initState();
   }
 
-  var selectedTab = 0;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,15 +55,7 @@ class _TasksLayoutState extends State<TasksLayout> {
               } else if (state is ErrorState) {
                 return const Center(child: Text("error"));
               } else if (state is LoadedState) {
-                var list = state.taskList;
-                if (selectedTab != 0) {
-                  list = list
-                      .where(
-                        (task) => task.type == selectedTab,
-                      )
-                      .toList();
-                }
-
+                final list = state.taskList;
                 return Stack(
                   children: [
                     Text(list.length.toString()),
@@ -75,9 +65,12 @@ class _TasksLayoutState extends State<TasksLayout> {
                           firstTabTitle: "Усі",
                           secondTabTitle: "Робочі",
                           thirdTabTitle: "Особисті",
-                          selectedTab: selectedTab,
-                          onChanged: (value) =>
-                              setState(() => selectedTab = value),
+                          selectedTab: state.selectedTab,
+                          onChanged: (value) {
+                            context.read<TaskListBloc>().add(
+                                  TaskListTypeChanged(value),
+                                );
+                          },
                         ),
                         Expanded(
                           child: ListView.separated(

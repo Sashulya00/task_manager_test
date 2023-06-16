@@ -66,10 +66,10 @@ class _TaskWidgetState extends State<TaskWidget> {
   }
 
   @override
-  void initState() {
+  void didChangeDependencies() {
     updateIsChecked();
 
-    super.initState();
+    super.didChangeDependencies();
   }
 
   @override
