@@ -10,28 +10,12 @@ part 'task_list_state.dart';
 class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
   final Repository repository;
 
-  List<TaskModel> filterTasks(List<TaskModel> allTasks, int selectedTab) {
-    if (selectedTab == 0) {
-      return allTasks;
-    } else if (selectedTab == 1) {
-      final result = allTasks
-          .where(
-            (task) => task.type == 1,
-          )
-          .toList();
-      final workTasks = result.toList();
-      return workTasks;
-    } else if (selectedTab == 2) {
-      final result = allTasks
-          .where(
-            (task) => task.type == 2,
-          )
-          .toList();
-      final personalTasks = result.toList();
-      return personalTasks;
-    }
-    throw Exception('Unhandled selectedTab in filterTasks');
-  }
+  List<TaskModel> filterTasks(List<TaskModel> allTasks, int selectedTab) =>
+      switch (selectedTab) {
+        1 => allTasks.where((task) => task.type == 1).toList(),
+        2 => allTasks.where((task) => task.type == 2).toList(),
+        _ => allTasks,
+      };
 
   TaskListBloc(this.repository) : super(InitialState()) {
     on<LoadTaskList>(
