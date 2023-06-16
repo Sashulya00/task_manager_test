@@ -10,14 +10,43 @@ part 'task_list_state.dart';
 class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
   final Repository repository;
 
+  List<TaskModel> filterTasks(List<TaskModel> allTasks, int selectedTab) {
+    if (selectedTab == 0) {
+      return allTasks;
+    } else if (selectedTab == 1) {
+      final result = allTasks
+          .where(
+            (task) => task.type == 1,
+          )
+          .toList();
+      final workTasks = result.toList();
+      return workTasks;
+    } else if (selectedTab == 2) {
+      final result = allTasks
+          .where(
+            (task) => task.type == 2,
+          )
+          .toList();
+      final personalTasks = result.toList();
+      return personalTasks;
+    }
+    throw Exception('Unhandled selectedTab in filterTasks');
+  }
+
   TaskListBloc(this.repository) : super(InitialState()) {
     on<LoadTaskList>(
       (event, emit) async {
         try {
+          int? currentSelectedTab;
+          if (state is LoadedState) {
+            currentSelectedTab = (state as LoadedState).selectedTab;
+          }
+
           emit(LoadingState());
 
           final list = await repository.fetchTasks();
-          emit(LoadedState(list, 0));
+          final filteredTasks = filterTasks(list, currentSelectedTab ?? 0);
+          emit(LoadedState(filteredTasks, currentSelectedTab ?? 0));
         } catch (error) {
           emit(ErrorState(error));
         }
@@ -27,6 +56,11 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
     on<ChangeTaskButtonPressed>(
       (event, emit) async {
         try {
+          int? currentSelectedTab;
+          if (state is LoadedState) {
+            currentSelectedTab = (state as LoadedState).selectedTab;
+          }
+
           emit(LoadingState());
 
           await repository.changeTask(
@@ -34,7 +68,8 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
             event.isChecked,
           );
           final list = await repository.fetchTasks();
-          emit(LoadedState(list, 0));
+          final filteredTasks = filterTasks(list, currentSelectedTab ?? 0);
+          emit(LoadedState(filteredTasks, currentSelectedTab ?? 0));
         } catch (error) {
           emit(ErrorState(error));
         }
@@ -47,26 +82,8 @@ class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
           emit(LoadingState());
 
           final allTasks = await repository.fetchTasks();
-
-          if (event.type == 0) {
-            emit(LoadedState(allTasks, 0));
-          } else if (event.type == 1) {
-            final result = allTasks
-                .where(
-                  (task) => task.type == 1,
-                )
-                .toList();
-            final workTasks = result.toList();
-            emit(LoadedState(workTasks, 1));
-          } else if (event.type == 2) {
-            final result = allTasks
-                .where(
-                  (task) => task.type == 2,
-                )
-                .toList();
-            final personalTasks = result.toList();
-            emit(LoadedState(personalTasks, 2));
-          }
+          final filteredTasks = filterTasks(allTasks, event.type);
+          emit(LoadedState(filteredTasks, event.type));
         } catch (error) {
           emit(ErrorState(error));
         }
