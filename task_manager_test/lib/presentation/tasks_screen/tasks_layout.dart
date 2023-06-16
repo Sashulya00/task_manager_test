@@ -125,7 +125,7 @@ class _TasksLayoutState extends State<TasksLayout> {
                                 type: item.type!,
                                 status: item.status!,
                                 name: item.name!,
-                                finishDate: item.finishDate.toString() ?? '',
+                                finishDate: item.finishDate.toString(),
                                 onChecked: (value) =>
                                     context.read<TaskListBloc>().add(
                                           ChangeTaskButtonPressed(

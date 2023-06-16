@@ -1,6 +1,5 @@
-import 'package:bloc/bloc.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:meta/meta.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_manager_test/data/model/task_model.dart';
 import 'package:task_manager_test/data/repository/repository.dart';
 

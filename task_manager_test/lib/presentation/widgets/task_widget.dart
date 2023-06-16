@@ -89,7 +89,7 @@ class _TaskWidgetState extends State<TaskWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
+                SizedBox(
                   width: 45,
                   height: 45,
                   child: getTypeIcon(widget.type),
@@ -98,7 +98,7 @@ class _TaskWidgetState extends State<TaskWidget> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     space,
-                    Container(
+                    SizedBox(
                       width: 240,
                       height: 40,
                       child: Align(
@@ -113,21 +113,19 @@ class _TaskWidgetState extends State<TaskWidget> {
                         ),
                       ),
                     ),
-                    Container(
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text(
-                          widget.finishDate, //finishDate
-                          style: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.w600,
-                          ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        widget.finishDate, //finishDate
+                        style: const TextStyle(
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
                   ],
                 ),
-                Container(
+                SizedBox(
                   width: 45,
                   height: 45,
                   child: Transform.scale(
