@@ -10,10 +10,12 @@ part 'task_list_state.dart';
 class TaskListBloc extends Bloc<TaskListEvent, TaskListState> {
   final Repository repository;
 
-  List<TaskModel> filterTasks(List<TaskModel> allTasks, int selectedTab) =>
+  List<TaskModel> filterTasks(
+    List<TaskModel> allTasks,
+    int selectedTab,
+  ) =>
       switch (selectedTab) {
-        1 => allTasks.where((task) => task.type == 1).toList(),
-        2 => allTasks.where((task) => task.type == 2).toList(),
+        1 || 2 => allTasks.where((task) => task.type == selectedTab).toList(),
         _ => allTasks,
       };
 
