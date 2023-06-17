@@ -19,21 +19,22 @@ class _GreetingLayoutState extends State<GreetingLayout> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Stack(
-          children: [
-            const BackgroundWidget(),
-            Center(
-              child: PrimaryButtonWidget(
-                buttonTitle: buttonTitle,
-                buttonWidth: buttonWidth,
-                buttonColor: primaryColor,
-                buttonHeight: buttonHeight, onPressed: () {
-                  Navigator.of(context).pushNamed(TasksScreen.path);
-                },
-              ),
-            )
-          ],
-        ),
+      body: Stack(
+        children: [
+          const BackgroundWidget(),
+          Center(
+            child: PrimaryButtonWidget(
+              buttonTitle: buttonTitle,
+              buttonWidth: buttonWidth,
+              buttonColor: primaryColor,
+              buttonHeight: buttonHeight,
+              onPressed: () {
+                Navigator.of(context).pushNamed(TasksScreen.path);
+              },
+            ),
+          )
+        ],
+      ),
     );
   }
 }

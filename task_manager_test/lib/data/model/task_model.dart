@@ -17,9 +17,9 @@ class TaskModel {
   final int? type;
   final String? description;
   final String? file;
-  final String? finishDate;
+  final DateTime? finishDate;
   final int? urgent;
-  final String? syncTime;
+  final DateTime? syncTime;
 
   const TaskModel({
     required this.id,
@@ -42,9 +42,9 @@ class TaskModel {
     final type = json['type'];
     final description = json['description'];
     final file = json['file'];
-    final finishDate = json['finishDate'];
+    final finishDate = DateTime.parse(json['finishDate']);
     final urgent = json['urgent'];
-    final syncTime = json['syncTime'];
+    final syncTime = DateTime.parse(json['syncTime']);
     return TaskModel(
       id: id,
       taskId: taskId,
@@ -67,9 +67,9 @@ class TaskModel {
     int? type,
     String? description,
     String? file,
-    String? finishDate,
+    DateTime? finishDate,
     int? urgent,
-    String? syncTime,
+    DateTime? syncTime,
   }) =>
       TaskModel(
         id: id ?? this.id,
@@ -93,9 +93,22 @@ class TaskModel {
     map['type'] = type;
     map['description'] = description;
     map['file'] = file;
-    map['finishDate'] = finishDate;
+    if (finishDate != null) map['finishDate'] = finishDate!.toIso8601String();
     map['urgent'] = urgent;
-    map['syncTime'] = syncTime;
+    if (syncTime != null) map['syncTime'] = syncTime!.toIso8601String();
     return map;
   }
+
+  TaskModel copyWithoutImage() => TaskModel(
+        id: id,
+        taskId: taskId,
+        status: status,
+        name: name,
+        type: type,
+        description: description,
+        file: null,
+        finishDate: finishDate,
+        urgent: urgent,
+        syncTime: syncTime,
+      );
 }

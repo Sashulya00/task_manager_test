@@ -12,7 +12,7 @@ void main() {
     MaterialApp(
       theme: ThemeData(
           primaryColor: primaryColor,
-          colorScheme: ColorScheme.light(
+          colorScheme: const ColorScheme.light(
             secondary: primaryColor,
           )),
       home: const GreetingScreen(),

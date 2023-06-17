@@ -18,7 +18,7 @@ class PrimaryButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: buttonWidth,
       height: buttonHeight,
       child: ElevatedButton(
@@ -31,7 +31,7 @@ class PrimaryButtonWidget extends StatelessWidget {
           style: const TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.w500,
-            fontSize: 24,
+            fontSize: 20,
           ),
         ),
       ),

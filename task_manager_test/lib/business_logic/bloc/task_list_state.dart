@@ -8,11 +8,19 @@ class InitialState extends TaskListState {}
 class LoadingState extends TaskListState {}
 
 class LoadedState extends TaskListState {
-  LoadedState(this.taskList);
-  final List<TaskModel> taskList;
+  LoadedState({
+    required this.allTasks,
+    required this.selectedTab,
+    required this.filteredTasks,
+  });
+
+  final int selectedTab;
+  final List<TaskModel> allTasks;
+  final List<TaskModel> filteredTasks;
 }
 
 class ErrorState extends TaskListState {
   ErrorState(this.error);
-  final Object  error;
+
+  final Object error;
 }

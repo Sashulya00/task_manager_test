@@ -8,18 +8,22 @@ class SelectButtonWidget extends StatefulWidget {
     required this.secondTabTitle,
     required this.thirdTabTitle,
     required this.onChanged,
+    required this.selectedTab,
   });
 
   final String firstTabTitle;
   final String secondTabTitle;
   final String thirdTabTitle;
+
+  final int selectedTab;
   final void Function(int) onChanged;
 
   @override
   State<SelectButtonWidget> createState() => _SelectButtonWidgetState();
 }
 
-class _SelectButtonWidgetState extends State<SelectButtonWidget> with SingleTickerProviderStateMixin {
+class _SelectButtonWidgetState extends State<SelectButtonWidget>
+    with SingleTickerProviderStateMixin {
   late final TabController _controller;
 
   final circularRadius = BorderRadius.circular(40.0);
@@ -38,12 +42,18 @@ class _SelectButtonWidgetState extends State<SelectButtonWidget> with SingleTick
   @override
   void initState() {
     super.initState();
-
+    _selectedIndex = widget.selectedTab;
     _controller = TabController(length: 3, vsync: this);
   }
 
+  // todo: почему когда убираю єтот метод то лагает таббар
+  @override
+  void didUpdateWidget(covariant SelectButtonWidget oldWidget) {
+    _selectedIndex = widget.selectedTab;
+    super.didUpdateWidget(oldWidget);
+  }
+
   void onTap(int i) {
-    _selectedIndex = i;
     widget.onChanged(i);
   }
 
@@ -68,7 +78,8 @@ class _SelectButtonWidgetState extends State<SelectButtonWidget> with SingleTick
                     length: countTabs,
                     child: TabBar(
                       controller: _controller,
-                      onTap: (selected) => setState(() => _selectedIndex = selected),
+                      onTap: (selected) =>
+                          setState(() => _selectedIndex = selected),
                       unselectedLabelColor: Colors.black,
                       labelColor: Colors.black,
                       indicatorColor: Colors.transparent,
@@ -79,20 +90,32 @@ class _SelectButtonWidgetState extends State<SelectButtonWidget> with SingleTick
                       tabs: [
                         TabWidget(
                           tabsTitle: widget.firstTabTitle,
-                          customWidth: _selectedIndex == 0 ? widthButtonPlus : widthButton,
-                          customColor: _selectedIndex == 0 ? enabledColor : disabledColor,
+                          customWidth: _selectedIndex == 0
+                              ? widthButtonPlus
+                              : widthButton,
+                          customColor: _selectedIndex == 0
+                              ? enabledColor
+                              : disabledColor,
                           onChanged: () => onTap(0),
                         ),
                         TabWidget(
                           tabsTitle: widget.secondTabTitle,
-                          customWidth: _selectedIndex == 1 ? widthButtonPlus : widthButton,
-                          customColor: _selectedIndex == 1 ? enabledColor : disabledColor,
+                          customWidth: _selectedIndex == 1
+                              ? widthButtonPlus
+                              : widthButton,
+                          customColor: _selectedIndex == 1
+                              ? enabledColor
+                              : disabledColor,
                           onChanged: () => onTap(1),
                         ),
                         TabWidget(
                           tabsTitle: widget.thirdTabTitle,
-                          customWidth: _selectedIndex == 2 ? widthButtonPlus : widthButton,
-                          customColor: _selectedIndex == 2 ? enabledColor : disabledColor,
+                          customWidth: _selectedIndex == 2
+                              ? widthButtonPlus
+                              : widthButton,
+                          customColor: _selectedIndex == 2
+                              ? enabledColor
+                              : disabledColor,
                           onChanged: () => onTap(2),
                         ),
                       ],
